@@ -39,38 +39,81 @@ A smart expense-sharing app for office carpools. Automatically calculates paymen
 
 #### Build Android App
 
+**Step 1: Install Android Development Environment**
+
 ```bash
-# 1. Clone the repository
+# On macOS with Homebrew
+brew install android-sdk
+brew install android-ndk
+
+# On Windows/Linux, download from:
+# https://developer.android.com/studio
+
+# Set environment variables in ~/.bashrc or ~/.zshrc
+export ANDROID_HOME=$HOME/Library/Android/sdk
+export PATH=$PATH:$ANDROID_HOME/emulator
+export PATH=$PATH:$ANDROID_HOME/tools
+export PATH=$PATH:$ANDROID_HOME/tools/bin
+export PATH=$PATH:$ANDROID_HOME/platform-tools
+```
+
+**Step 2: Clone & Install Project**
+
+```bash
+# Clone the repository
 git clone https://github.com/Jeckyjay/commute-ledger.git
 cd commute-ledger
 
-# 2. Install dependencies
+# Install Node dependencies
 npm install
 # or
 yarn install
+```
 
-# 3. Install Android dependencies (if not already installed)
-# Make sure you have Android SDK, NDK, and JDK installed
-# Update: Android SDK: API 34+, Build Tools: 34.0.0+
+**Step 3: Build Android Debug APK**
 
-# 4. Start Metro bundler (in one terminal)
-npm run android:dev
-# or
-yarn android:dev
-
-# 5. Build and run on Android (in another terminal)
+```bash
+# Build debug APK
 npm run android:build
 # or
-yarn android:build
+cd android && ./gradlew assembleDebug && cd ..
 
-# To build release APK:
+# APK will be generated at:
+# android/app/build/outputs/apk/debug/app-debug.apk
+```
+
+**Step 4: Build Android Release APK**
+
+```bash
+# Generate release keystore (first time only)
+keytool -genkey -v -keystore my-release-key.keystore -keyalg RSA -keysize 2048 -validity 10000 -alias my-key-alias
+
+# Build release APK
 npm run android:release
+# or
+cd android && ./gradlew assembleRelease && cd ..
+
+# APK will be generated at:
+# android/app/build/outputs/apk/release/app-release.apk
+```
+
+**Step 5: Run on Device/Emulator**
+
+```bash
+# Option A: Using React Native CLI
+npx react-native run-android
+
+# Option B: Using Android Studio
+# Open the android/ folder in Android Studio and click Run
+
+# Option C: Manual installation
+adb install android/app/build/outputs/apk/debug/app-debug.apk
 ```
 
 #### Project Structure
 ```
 commute-ledger/
-├── android/              # Android native code
+├── android/              # Android native code & gradle config
 ├── ios/                  # iOS native code
 ├── src/
 │   ├── components/       # React Native components
